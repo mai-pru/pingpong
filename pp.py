@@ -33,7 +33,7 @@ class Player(GameSprite):
         if keys[K_d] and self.rect.y < win_width - 80:
             self.rect.y += self.speed
     #method to "shoot" (use the player position to create a bullet there)
-back = (69,69,69)
+back = (255,255,255)
 win_width = 500
 window = display.set_mode((600,500))
 window.fill(back)
@@ -42,7 +42,13 @@ finish = False
 clock = time.Clock()
 racketl = Player('left.png',50,50,50,150,10)
 racketr = Player('right.png',500,50,50,150,10)
-ball = GameSprite('ball.jpg',250,50,50,150,30)
+ball = GameSprite('ball.jpg',250,50,50,50,30)
+speex = 4
+speey = 4
+font.init()
+F = font.Font(None,69)
+win1 = F.render('winer letf',True,(0,0,0))
+win2 = F.render('winer rigth',True,(0,0,0))
 while game:
     for e in event.get():
         if e.type == QUIT:
@@ -51,6 +57,20 @@ while game:
         window.fill(back)
         racketl.updatel()
         racketr.updater()
+        ball.rect.x += speex
+        ball.rect.y += speey
+        if ball.rect.y < 0 or ball.rect.y > 450:
+            speey *= -1
+        if sprite.collide_rect(racketl,ball) or sprite.collide_rect(racketr,ball):
+            speex *= -1
+        if ball.rect.x < 0:
+            finish = True
+            window.blit(win2,(250,300))
+            game = False
+        if ball.rect.x > 500:
+            finish = True
+            window.blit(win1,(250,300))
+            game = False            
         racketl.reset()
         racketr.reset()
         ball.reset()
